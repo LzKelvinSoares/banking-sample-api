@@ -1,6 +1,7 @@
 package app
 
 import (
+	"banking/builder"
 	"banking/domain"
 	"banking/service"
 	"log"
@@ -18,7 +19,7 @@ func Start() {
 	// 	service: service.NewCustomerService(domain.NewCustomerRepositoryStub()),
 	// }
 	ch := CustomerHandler{
-		service:       service.NewCustomerService(domain.NewCustomerRepositoryDB()),
+		service:       service.NewCustomerService(domain.NewCustomerRepositoryDB(), builder.NewCustomerBuilder()),
 		statusService: service.NewStatusService(),
 	}
 

@@ -1,29 +1,50 @@
 package service
 
 import (
+	"banking/builder"
 	"banking/domain"
+	"banking/dto"
 	"banking/errs"
 )
 
 type CustomerService interface {
-	GetAllCustomers(status *domain.Status) ([]domain.Customer, *errs.AppError)
-	GetCustomer(id string) (*domain.Customer, *errs.AppError)
+	GetAllCustomers(status *domain.Status) ([]dto.CustomerResponse, *errs.AppError)
+	GetCustomer(id string) (*dto.CustomerResponse, *errs.AppError)
 }
 
 type DefaultCustomerService struct {
-	repo domain.CustomerRepository
+	repo  domain.CustomerRepository
+	build builder.CustomerBuilder
 }
 
-func (s DefaultCustomerService) GetAllCustomers(status *domain.Status) ([]domain.Customer, *errs.AppError) {
-	return s.repo.FindAll(status)
+func (s DefaultCustomerService) GetAllCustomers(status *domain.Status) ([]dto.CustomerResponse, *errs.AppError) {
+	customers, err := s.repo.FindAll(status)
+	if err != nil {
+		return nil, err
+	}
+
+	var response []dto.CustomerResponse
+
+	for _, c := range customers {
+		response = append(response, c.BuildCustomerDTO(s.build))
+	}
+
+	return response, nil
 }
 
-func (s DefaultCustomerService) GetCustomer(id string) (*domain.Customer, *errs.AppError) {
-	return s.repo.ById(id)
+func (s DefaultCustomerService) GetCustomer(id string) (*dto.CustomerResponse, *errs.AppError) {
+	c, err := s.repo.ById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := c.BuildCustomerDTO(s.build)
+	return &response, nil
 }
 
-func NewCustomerService(repository domain.CustomerRepository) DefaultCustomerService {
+func NewCustomerService(repository domain.CustomerRepository, build builder.CustomerBuilder) DefaultCustomerService {
 	return DefaultCustomerService{
-		repo: repository,
+		repo:  repository,
+		build: build,
 	}
 }
