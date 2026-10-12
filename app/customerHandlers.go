@@ -10,19 +10,21 @@ import (
 )
 
 type CustomerHandler struct {
-	service service.CustomerService
+	service       service.CustomerService
+	statusService service.StatusService
 }
 
 func (ch *CustomerHandler) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	var status *domain.Status
 	if raw := q.Get("status"); raw != "" {
-		s, err := domain.ParseStatus(raw)
+		s, err := ch.statusService.ParseStatus(raw)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			writeResponse(w, err.Code, err.AsMessage())
 			return
+		} else {
+			status = &s
 		}
-		status = &s
 	}
 	customers, err := ch.service.GetAllCustomers(status)
 	if err != nil {

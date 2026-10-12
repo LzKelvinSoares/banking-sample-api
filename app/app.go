@@ -18,7 +18,8 @@ func Start() {
 	// 	service: service.NewCustomerService(domain.NewCustomerRepositoryStub()),
 	// }
 	ch := CustomerHandler{
-		service: service.NewCustomerService(domain.NewCustomerRepositoryDB()),
+		service:       service.NewCustomerService(domain.NewCustomerRepositoryDB()),
+		statusService: service.NewStatusService(),
 	}
 
 	// define routes
