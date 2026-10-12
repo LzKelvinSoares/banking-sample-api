@@ -5,6 +5,7 @@ import (
 	"banking/domain"
 	"banking/dto"
 	"banking/errs"
+	"banking/logger"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func buildTransaction(req dto.NewTransactionRequest, transactionType string) dom
 
 func getOperator(transactionType string) string {
 	operator := "+"
-	if transactionType == "withdrawl" {
+	if transactionType == constants.WITHDRAWAL {
 		operator = "-"
 	}
 	return operator
@@ -47,9 +48,19 @@ func (s DefaultTransactionService) updateAccountBalance(newTransaction domain.Tr
 }
 
 func (s DefaultTransactionService) Withdrawal(req dto.NewTransactionRequest) (*dto.NewTransactionResponse, *errs.AppError) {
+	account, appErr := s.accountRepo.GetById(req.AccountId)
+	if appErr != nil {
+		logger.Error("Error while retrieving account")
+		return nil, appErr
+	}
+
 	err := req.Validate()
 	if err != nil {
 		return nil, err
+	}
+
+	if req.Amount > account.Amount {
+		return nil, errs.NewValidationError("Insuficient funds")
 	}
 
 	t := buildTransaction(req, constants.WITHDRAWAL)

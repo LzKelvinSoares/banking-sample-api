@@ -13,7 +13,7 @@ type AccountRepositoryDB struct {
 	client *sqlx.DB
 }
 
-func (d AccountRepositoryDB) getById(id string) (*Account, *errs.AppError) {
+func (d AccountRepositoryDB) GetById(id string) (*Account, *errs.AppError) {
 	findByIdSql := "select account_id, customer_id, opening_date, account_type, amount, status from accounts where account_id = ?"
 	var a Account
 	err := d.client.Get(&a, findByIdSql, id)
@@ -58,7 +58,7 @@ func (d AccountRepositoryDB) UpdateBalance(id string, amount float64, transactio
 		return nil, errs.NewUnexpectedError("Unexpected error from DB")
 	}
 
-	account, appErr := d.getById(id)
+	account, appErr := d.GetById(id)
 	if appErr != nil {
 		logger.Error("Error while updating account")
 		return nil, appErr

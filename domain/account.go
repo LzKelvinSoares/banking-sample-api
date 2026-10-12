@@ -15,6 +15,7 @@ type Account struct {
 }
 
 type AccountRepository interface {
+	GetById(id string) (*Account, *errs.AppError)
 	Save(Account) (*Account, *errs.AppError)
 	UpdateBalance(id string, amount float64, transactionOperator string) (*Account, *errs.AppError)
 }
