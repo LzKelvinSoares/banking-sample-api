@@ -1,8 +1,6 @@
 package builder
 
-import (
-	"banking/dto"
-)
+import "banking/dto"
 
 type CustomerBuilder struct {
 	customerResponse dto.CustomerResponse

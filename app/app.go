@@ -34,6 +34,7 @@ func Start() {
 	dbClient := getDBClient()
 	customerRepositoryDB := domain.NewCustomerRepositoryDB(dbClient)
 	accountRepositoryDB := domain.NewAccountRepositoryDB(dbClient)
+	transactionRepositoryDB := domain.NewTransactionRepositoryDB(dbClient)
 	customerBuilder := builder.NewCustomerBuilder()
 	ch := CustomerHandler{
 		service:       service.NewCustomerService(customerRepositoryDB, customerBuilder),
@@ -41,13 +42,15 @@ func Start() {
 	}
 
 	ah := AccountHandler{
-		service: service.NewAccountService(accountRepositoryDB),
+		service:            service.NewAccountService(accountRepositoryDB),
+		transactionService: service.NewTransactionService(transactionRepositoryDB, accountRepositoryDB),
 	}
 
 	// define routes
 	router.HandleFunc("/customers", ch.GetAllCustomers).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{id:[0-9]+}", ch.GetCustomer).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{id:[0-9]+}/account", ah.NewAccount).Methods(http.MethodPost)
+	router.HandleFunc("/customers/{id:[0-9]+}/account/{account_id:[0-9]+}/{transaction_type}", ah.MakeTransaction).Methods(http.MethodPost)
 
 	// starting server
 	address := os.Getenv("SERVER_ADDRESS")
@@ -57,15 +60,15 @@ func Start() {
 }
 
 func getDBClient() *sqlx.DB {
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbAddress := os.Getenv("DB_ADDRESS")
-	dbPort := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
+	// dbUser := os.Getenv("DB_USER")
+	// dbPassword := os.Getenv("DB_PASSWORD")
+	// dbAddress := os.Getenv("DB_ADDRESS")
+	// dbPort := os.Getenv("DB_PORT")
+	// dbName := os.Getenv("DB_NAME")
 
-	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbAddress, dbPort, dbName)
-	client, err := sqlx.Open("mysql", dataSource)
-	// client, err := sqlx.Open("mysql", "root:password@tcp(localhost:3306)/banking")
+	// dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbAddress, dbPort, dbName)
+	// client, err := sqlx.Open("mysql", dataSource)
+	client, err := sqlx.Open("mysql", "root:password@tcp(localhost:3306)/banking")
 	if err != nil {
 		panic(err)
 	}
