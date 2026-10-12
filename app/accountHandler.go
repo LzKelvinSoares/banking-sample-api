@@ -53,7 +53,7 @@ func (ah AccountHandler) MakeTransaction(w http.ResponseWriter, r *http.Request)
 		case constants.WITHDRAWAL:
 			transaction, appErr = ah.transactionService.Withdrawal(request)
 		default:
-			writeResponse(w, http.StatusBadRequest, "Transaction Type not found")
+			writeResponse(w, http.StatusBadRequest, "Transaction Type should be Deposit or Withdrawal")
 
 		}
 
