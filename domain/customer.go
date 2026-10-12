@@ -17,7 +17,8 @@ type Customer struct {
 
 func (c Customer) BuildCustomerDTO(b builder.CustomerBuilder) dto.CustomerResponse {
 	customerResponse := b.WithId(c.Id).
-		WithName(c.Name).WithCity(c.City).
+		WithName(c.Name).
+		WithCity(c.City).
 		WithZipCode(c.Zipcode).
 		WithDateOfBirth(c.DateofBirth).
 		WithStatus(c.Status).
