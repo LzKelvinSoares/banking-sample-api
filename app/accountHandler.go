@@ -1,7 +1,6 @@
 package app
 
 import (
-	"banking/constants"
 	"banking/dto"
 	"banking/errs"
 	"banking/service"
@@ -47,14 +46,11 @@ func (ah AccountHandler) MakeTransaction(w http.ResponseWriter, r *http.Request)
 		request.TransactionType = transactionType
 		var transaction *dto.NewTransactionResponse
 		var appErr *errs.AppError
-		switch transactionType {
-		case constants.DEPOSIT:
-			transaction, appErr = ah.transactionService.Deposit(request)
-		case constants.WITHDRAWAL:
-			transaction, appErr = ah.transactionService.Withdrawal(request)
-		default:
-			writeResponse(w, http.StatusBadRequest, "Transaction Type should be Deposit or Withdrawal")
 
+		if request.IsTransactionTypeWithdrawal() {
+			transaction, appErr = ah.transactionService.Withdrawal(request)
+		} else {
+			transaction, appErr = ah.transactionService.Deposit(request)
 		}
 
 		if appErr != nil {

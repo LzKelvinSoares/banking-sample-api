@@ -78,11 +78,11 @@ func (s DefaultTransactionService) Deposit(req dto.NewTransactionRequest) (*dto.
 	}
 
 	t := buildTransaction(req, constants.DEPOSIT)
-	_, appErr := s.repo.SaveTransaction(t)
+	newTransaction, appErr := s.repo.SaveTransaction(t)
 	if appErr != nil {
 		return nil, appErr
 	}
-	return s.updateAccountBalance(t)
+	return s.updateAccountBalance(*newTransaction)
 }
 
 func NewTransactionService(repo domain.TransactionRepository, accountRepo domain.AccountRepository) DefaultTransactionService {

@@ -11,13 +11,21 @@ type NewTransactionRequest struct {
 	Amount          float64 `json:"amount"`
 }
 
+func (n NewTransactionRequest) IsTransactionTypeWithdrawal() bool {
+	return n.TransactionType == constants.WITHDRAWAL
+}
+
+func (n NewTransactionRequest) IsTransactionTypeDeposit() bool {
+	return n.TransactionType == constants.DEPOSIT
+}
+
 func (n NewTransactionRequest) Validate() *errs.AppError {
-	if n.Amount < 0 {
-		return errs.NewValidationError("The new transaction cannot be under zero")
+	if !n.IsTransactionTypeWithdrawal() && !n.IsTransactionTypeDeposit() {
+		return errs.NewValidationError("Transaction type should be Withdrawal or Deposit")
 	}
 
-	if n.TransactionType != constants.WITHDRAWAL && n.TransactionType != constants.DEPOSIT {
-		return errs.NewValidationError("Transaction type should be Withdrawal or Deposit")
+	if n.Amount < 0 {
+		return errs.NewValidationError("The new transaction cannot be under zero")
 	}
 	return nil
 }
