@@ -3,6 +3,7 @@ package domain
 import (
 	"banking/dto"
 	"banking/errs"
+	"time"
 )
 
 type Account struct {
@@ -14,14 +15,25 @@ type Account struct {
 	Status      string
 }
 
+//go:generate mockgen -destination=../mocks/domain/mockAccountRepository.go -package=domain banking/domain AccountRepository
 type AccountRepository interface {
 	GetById(id string) (*Account, *errs.AppError)
 	Save(Account) (*Account, *errs.AppError)
 	UpdateBalance(id string, amount float64, transactionOperator string) (*Account, *errs.AppError)
 }
 
-func (a Account) ToNewAccountResponseDTO() dto.NewAccountResponse {
-	return dto.NewAccountResponse{
+func (a Account) ToNewAccountResponseDTO() *dto.NewAccountResponse {
+	return &dto.NewAccountResponse{
 		AccountId: a.AccountId,
+	}
+}
+
+func NewAccount(customerId, accountType string, amount float64) Account {
+	return Account{
+		CustomerId:  customerId,
+		OpeningDate: time.Now().Format("2006-01-02 15:04:05"),
+		AccountType: accountType,
+		Amount:      amount,
+		Status:      "1",
 	}
 }
