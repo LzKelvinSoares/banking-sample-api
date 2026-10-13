@@ -2,6 +2,7 @@ package app
 
 import (
 	"banking/builder"
+	"banking/constants"
 	"banking/domain"
 	"banking/service"
 	"fmt"
@@ -47,10 +48,31 @@ func Start() {
 	}
 
 	// define routes
-	router.HandleFunc("/customers", ch.GetAllCustomers).Methods(http.MethodGet)
-	router.HandleFunc("/customers/{id:[0-9]+}", ch.GetCustomer).Methods(http.MethodGet)
-	router.HandleFunc("/customers/{id:[0-9]+}/account", ah.NewAccount).Methods(http.MethodPost)
-	router.HandleFunc("/customers/{id:[0-9]+}/account/{account_id:[0-9]+}/{transaction_type}", ah.MakeTransaction).Methods(http.MethodPost)
+	router.
+		HandleFunc(constants.GET_CUSTOMERS, ch.GetAllCustomers).
+		Methods(http.MethodGet).
+		Name(constants.ROUTE_NAME_GET_CUSTOMERS)
+
+	router.
+		HandleFunc(constants.GET_CUSTOMER_BY_ID, ch.GetCustomer).
+		Methods(http.MethodGet).
+		Name(constants.ROUTE_NAME_GET_CUSTOMER)
+
+	router.
+		HandleFunc(constants.NEW_ACCOUNT, ah.NewAccount).
+		Methods(http.MethodPost).
+		Name(constants.ROUTE_NAME_NEW_ACCOUNT)
+
+	router.
+		HandleFunc(constants.MAKE_TRANSACTION, ah.MakeTransaction).
+		Methods(http.MethodPost).
+		Name(constants.ROUTE_NAME_MAKE_TRANSACTION)
+
+	am := AuthMiddleware{
+		repo: domain.NewAuthRepository(),
+	}
+	router.
+		Use(am.authorizationHandler())
 
 	// starting server
 	address := os.Getenv("SERVER_ADDRESS")
