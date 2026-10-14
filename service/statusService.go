@@ -2,7 +2,8 @@ package service
 
 import (
 	"banking/domain"
-	"banking/errs"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 )
 
 type StatusService interface {

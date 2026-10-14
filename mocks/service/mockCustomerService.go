@@ -7,8 +7,9 @@ package service
 import (
 	domain "banking/domain"
 	dto "banking/dto"
-	errs "banking/errs"
 	reflect "reflect"
+
+	errs "github.com/LzKelvinSoares/lzk-go-lib/errs"
 
 	gomock "github.com/golang/mock/gomock"
 )

@@ -3,11 +3,12 @@ package app
 import (
 	"banking/constants"
 	"banking/dto"
-	"banking/errs"
 	"banking/mocks/service"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"

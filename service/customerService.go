@@ -4,7 +4,8 @@ import (
 	"banking/builder"
 	"banking/domain"
 	"banking/dto"
-	"banking/errs"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 )
 
 //go:generate mockgen -destination=../mocks/service/mockCustomerService.go -package=service banking/service CustomerService

@@ -6,8 +6,9 @@ package domain
 
 import (
 	domain "banking/domain"
-	errs "banking/errs"
 	reflect "reflect"
+
+	errs "github.com/LzKelvinSoares/lzk-go-lib/errs"
 
 	gomock "github.com/golang/mock/gomock"
 )

@@ -1,9 +1,11 @@
 package domain
 
 import (
-	"banking/errs"
-	"banking/logger"
 	"database/sql"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/logger"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"

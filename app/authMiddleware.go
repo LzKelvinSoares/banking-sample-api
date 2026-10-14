@@ -2,9 +2,10 @@ package app
 
 import (
 	"banking/domain"
-	"banking/errs"
 	"net/http"
 	"strings"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 
 	"github.com/gorilla/mux"
 )

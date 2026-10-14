@@ -4,9 +4,11 @@ import (
 	"banking/constants"
 	"banking/domain"
 	"banking/dto"
-	"banking/errs"
-	"banking/logger"
 	"time"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/logger"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 )
 
 type TransactionService interface {

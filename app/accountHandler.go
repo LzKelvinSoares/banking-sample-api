@@ -2,10 +2,11 @@ package app
 
 import (
 	"banking/dto"
-	"banking/errs"
 	"banking/service"
 	"encoding/json"
 	"net/http"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 
 	"github.com/gorilla/mux"
 )

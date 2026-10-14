@@ -1,6 +1,6 @@
 package dto
 
-import "banking/errs"
+import "github.com/LzKelvinSoares/lzk-go-lib/errs"
 
 type NewAccountRequest struct {
 	CustomerId  string  `json:"customer_id"`

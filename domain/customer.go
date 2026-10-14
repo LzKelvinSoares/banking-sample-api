@@ -3,7 +3,8 @@ package domain
 import (
 	"banking/builder"
 	"banking/dto"
-	"banking/errs"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 )
 
 type Customer struct {

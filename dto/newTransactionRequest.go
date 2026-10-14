@@ -2,7 +2,8 @@ package dto
 
 import (
 	"banking/constants"
-	"banking/errs"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 )
 
 type NewTransactionRequest struct {

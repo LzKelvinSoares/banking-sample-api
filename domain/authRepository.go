@@ -1,11 +1,12 @@
 package domain
 
 import (
-	"banking/logger"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/logger"
 )
 
 type AuthRepository interface {

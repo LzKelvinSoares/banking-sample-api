@@ -2,7 +2,8 @@ package main
 
 import (
 	"banking/app"
-	"banking/logger"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/logger"
 )
 
 func main() {

@@ -2,8 +2,9 @@ package domain
 
 import (
 	"banking/dto"
-	"banking/errs"
 	"time"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 )
 
 type Account struct {

@@ -3,7 +3,8 @@ package service
 import (
 	"banking/domain"
 	"banking/dto"
-	"banking/errs"
+
+	"github.com/LzKelvinSoares/lzk-go-lib/errs"
 )
 
 type AccountService interface {
