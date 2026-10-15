@@ -5,7 +5,6 @@ import (
 	"banking/constants"
 	"banking/domain"
 	"banking/service"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -17,19 +16,14 @@ import (
 
 func Start() {
 	serverVariables := environment.GetServerVariables()
-
-	// mux := http.NewServeMux()
 	router := mux.NewRouter()
-
-	// wiring
-	// ch := CustomerHandler{
-	// 	service: service.NewCustomerService(domain.NewCustomerRepositoryStub()),
-	// }
 	dbClient := getDBClient()
+
 	customerRepositoryDB := domain.NewCustomerRepositoryDB(dbClient)
 	accountRepositoryDB := domain.NewAccountRepositoryDB(dbClient)
 	transactionRepositoryDB := domain.NewTransactionRepositoryDB(dbClient)
 	customerBuilder := builder.NewCustomerBuilder()
+
 	ch := CustomerHandler{
 		service:       service.NewCustomerService(customerRepositoryDB, customerBuilder),
 		statusService: service.NewStatusService(),
@@ -68,7 +62,7 @@ func Start() {
 		Use(am.authorizationHandler())
 
 	// starting server
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", serverVariables.Address, serverVariables.Port), router))
+	log.Fatal(http.ListenAndServe(serverVariables.GetAddressToServe(), router))
 
 }
 
