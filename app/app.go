@@ -8,22 +8,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
+	"github.com/LzKelvinSoares/lzk-go-lib/environment"
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 )
 
-func sanityCheck() {
-	if os.Getenv("SERVER_ADDRESS") == "" ||
-		os.Getenv("SERVER_PORT") == "" {
-		log.Fatal("Environment variables not defined!")
-	}
-}
-
 func Start() {
-	sanityCheck()
+	serverVariables := environment.GetServerVariables()
 
 	// mux := http.NewServeMux()
 	router := mux.NewRouter()
@@ -75,22 +68,13 @@ func Start() {
 		Use(am.authorizationHandler())
 
 	// starting server
-	address := os.Getenv("SERVER_ADDRESS")
-	port := os.Getenv("SERVER_PORT")
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", address, port), router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", serverVariables.Address, serverVariables.Port), router))
 
 }
 
 func getDBClient() *sqlx.DB {
-	// dbUser := os.Getenv("DB_USER")
-	// dbPassword := os.Getenv("DB_PASSWORD")
-	// dbAddress := os.Getenv("DB_ADDRESS")
-	// dbPort := os.Getenv("DB_PORT")
-	// dbName := os.Getenv("DB_NAME")
-
-	// dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbAddress, dbPort, dbName)
-	// client, err := sqlx.Open("mysql", dataSource)
-	client, err := sqlx.Open("mysql", "root:password@tcp(localhost:3306)/banking")
+	dbVariables := environment.GetDBVariables()
+	client, err := sqlx.Open("mysql", dbVariables.GetDataSource())
 	if err != nil {
 		panic(err)
 	}
