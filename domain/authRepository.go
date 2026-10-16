@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/LzKelvinSoares/lzk-go-lib/logger"
 )
@@ -33,7 +34,7 @@ func (r RemoteAuthRepository) IsAuthorized(token string, routeName string, vars 
 }
 
 func buildVerifyURL(token string, routeName string, vars map[string]string) string {
-	u := url.URL{Host: "localhost:8081", Path: "/auth/verify", Scheme: "http"}
+	u := url.URL{Host: os.Getenv("AUTH_API"), Path: "/auth/verify", Scheme: "http"}
 	q := u.Query()
 	q.Add("token", token)
 	q.Add("routeName", routeName)
