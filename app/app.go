@@ -19,10 +19,30 @@ func Start() {
 	serverVariables := environment.GetServerVariables()
 	router := mux.NewRouter()
 	dbType := libConstants.SQLServer
-	dbClient := environment.GetDBClient(dbType)
+	dbClient := environment.GetSQLClient(dbType)
+
+	customerHandler, accountHandler := GetHandlers(dbType, dbClient)
+
+	// define routes
+	DefineRoutes(router, customerHandler, accountHandler)
+
+	am := AuthMiddleware{
+		repo: domain.NewAuthRepository(),
+	}
+	router.
+		Use(am.authorizationHandler())
+
+	// starting server
+	log.Fatal(http.ListenAndServe(serverVariables.GetAddressToServe(), router))
+
+}
+
+func GetHandlers(
+	dbType libConstants.DBType,
+	dbClient *sqlx.DB,
+) (CustomerHandler, AccountHandler) {
 
 	accountRepositoryDB, customerRepositoryDB, transactionRepositoryDB := GetDBRepositories(dbType, dbClient)
-
 	customerBuilder := builder.NewCustomerBuilder()
 
 	ch := CustomerHandler{
@@ -34,8 +54,10 @@ func Start() {
 		service:            service.NewAccountService(accountRepositoryDB),
 		transactionService: service.NewTransactionService(transactionRepositoryDB, accountRepositoryDB),
 	}
+	return ch, ah
+}
 
-	// define routes
+func DefineRoutes(router *mux.Router, ch CustomerHandler, ah AccountHandler) {
 	router.
 		HandleFunc(constants.GET_CUSTOMERS, ch.GetAllCustomers).
 		Methods(http.MethodGet).
@@ -55,16 +77,6 @@ func Start() {
 		HandleFunc(constants.MAKE_TRANSACTION, ah.MakeTransaction).
 		Methods(http.MethodPost).
 		Name(constants.ROUTE_NAME_MAKE_TRANSACTION)
-
-	am := AuthMiddleware{
-		repo: domain.NewAuthRepository(),
-	}
-	router.
-		Use(am.authorizationHandler())
-
-	// starting server
-	log.Fatal(http.ListenAndServe(serverVariables.GetAddressToServe(), router))
-
 }
 
 func GetDBRepositories(dbType libConstants.DBType, dbClient *sqlx.DB) (
